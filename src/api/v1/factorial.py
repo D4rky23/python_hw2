@@ -14,13 +14,15 @@ router = APIRouter(prefix="/v1/factorial", tags=["Factorial Operations"])
 
 class FactorialRequestModel(BaseModel):
     """Request model for factorial calculation."""
-    
-    n: int = Field(..., ge=0, description="Number to calculate factorial for", example=5)
+
+    n: int = Field(
+        ..., ge=0, description="Number to calculate factorial for", example=5
+    )
 
 
 class FactorialResponseModel(BaseModel):
     """Response model for factorial calculation."""
-    
+
     n: int = Field(..., description="Input number")
     result: int = Field(..., description="Factorial result")
 
@@ -29,7 +31,7 @@ class FactorialResponseModel(BaseModel):
     "/",
     response_model=FactorialResponseModel,
     summary="Calculate factorial",
-    description="Calculate factorial of a number (n!)"
+    description="Calculate factorial of a number (n!)",
 )
 async def calculate_factorial(
     request: FactorialRequestModel,
@@ -40,16 +42,16 @@ async def calculate_factorial(
     try:
         # Convert to domain model
         domain_request = FactorialRequest(n=request.n)
-        
+
         # Calculate result
         result = await service.calculate_factorial(domain_request)
-        
+
         # Return response
         return FactorialResponseModel(
             n=result.n,
             result=result.result,
         )
-        
+
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:

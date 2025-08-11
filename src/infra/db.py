@@ -1,7 +1,11 @@
 """Database configuration and session management."""
 
 from typing import AsyncGenerator
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
 
 from config import settings
 
@@ -32,6 +36,6 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
 async def create_tables() -> None:
     """Create database tables."""
     from repositories.sqlite_repo import Base
-    
+
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)

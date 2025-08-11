@@ -5,12 +5,14 @@ import json
 
 BASE_URL = "http://localhost:8000"
 
+
 def test_health():
     """Test health endpoint."""
     response = requests.get(f"{BASE_URL}/health")
     print(f"Health check: {response.status_code}")
     print(f"Response: {response.json()}")
     return response.status_code == 200
+
 
 def test_power():
     """Test power calculation."""
@@ -21,12 +23,14 @@ def test_power():
     print(f"Response: {response.json()}")
     return response.status_code == 200
 
+
 def test_fibonacci():
     """Test Fibonacci calculation."""
     response = requests.get(f"{BASE_URL}/api/v1/fibonacci/5")
     print(f"\nFibonacci calculation: {response.status_code}")
     print(f"Response: {response.json()}")
     return response.status_code == 200
+
 
 def test_factorial():
     """Test factorial calculation."""
@@ -37,6 +41,7 @@ def test_factorial():
     print(f"Response: {response.json()}")
     return response.status_code == 200
 
+
 def test_metrics():
     """Test metrics endpoint."""
     response = requests.get(f"{BASE_URL}/metrics")
@@ -44,10 +49,11 @@ def test_metrics():
     print(f"Content length: {len(response.text)} characters")
     return response.status_code == 200
 
+
 if __name__ == "__main__":
     print("🧪 Testing Math Service API")
     print("=" * 50)
-    
+
     try:
         tests = [
             ("Health Check", test_health),
@@ -56,23 +62,27 @@ if __name__ == "__main__":
             ("Factorial Calculation", test_factorial),
             ("Metrics Endpoint", test_metrics),
         ]
-        
+
         results = []
         for test_name, test_func in tests:
             try:
                 success = test_func()
-                results.append((test_name, "✅ PASS" if success else "❌ FAIL"))
+                results.append(
+                    (test_name, "✅ PASS" if success else "❌ FAIL")
+                )
             except Exception as e:
                 results.append((test_name, f"❌ ERROR: {e}"))
             print()
-        
+
         print("=" * 50)
         print("📊 Test Results:")
         for test_name, result in results:
             print(f"{test_name}: {result}")
-        
+
         all_passed = all("✅" in result for _, result in results)
-        print(f"\n🎯 Overall: {'✅ ALL TESTS PASSED' if all_passed else '❌ SOME TESTS FAILED'}")
-        
+        print(
+            f"\n🎯 Overall: {'✅ ALL TESTS PASSED' if all_passed else '❌ SOME TESTS FAILED'}"
+        )
+
     except Exception as e:
         print(f"❌ Failed to run tests: {e}")

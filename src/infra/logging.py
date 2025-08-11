@@ -18,7 +18,7 @@ def configure_logging() -> None:
         stream=sys.stdout,
         level=getattr(logging, settings.log_level),
     )
-    
+
     # Configure structlog
     structlog.configure(
         processors=[

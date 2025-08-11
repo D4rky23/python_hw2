@@ -73,3 +73,49 @@ Configuration is handled via environment variables:
 - Prometheus metrics at `/metrics`
 - Request/response logging with duration tracking
 - Database operation metrics
+
+## 🐳 Docker Troubleshooting
+
+If you encounter the "ModuleNotFoundError: No module named 'api'" error when running the Docker container, this is due to Python import path issues. Here's how to fix it:
+
+### Solution 1: Use the Fixed Dockerfile
+Use the simplified Dockerfile that properly sets the PYTHONPATH:
+
+```bash
+# Build with the simplified Dockerfile
+docker build -t math-service -f Dockerfile.simple .
+
+# Run the container
+docker run -it --rm -p 8000:8000 math-service
+```
+
+### Solution 2: Use docker-compose
+The docker-compose.yml file has been updated to use the correct configuration:
+
+```bash
+docker-compose up --build
+```
+
+### Solution 3: Manual Fix
+If you want to fix the original Dockerfile, ensure these environment variables are set:
+
+```dockerfile
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+```
+
+And the CMD should be:
+```dockerfile
+CMD ["python", "-m", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+### Verification
+Once the container is running, test the endpoints:
+
+```bash
+# Health check
+curl http://localhost:8000/health
+
+# API documentation
+curl http://localhost:8000/docs
+```

@@ -6,6 +6,6 @@ from .power import PowerService
 
 __all__ = [
     "PowerService",
-    "FibonacciService", 
+    "FibonacciService",
     "FactorialService",
 ]

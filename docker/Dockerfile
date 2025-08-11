@@ -3,6 +3,7 @@ FROM python:3.11-slim
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONPATH=/app
 
 # Set work directory
 WORKDIR /app
@@ -22,6 +23,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY src/ ./src/
+
+# Set Python path to find modules
+ENV PYTHONPATH=/app
 
 # Create non-root user
 RUN useradd --create-home --shell /bin/bash app \

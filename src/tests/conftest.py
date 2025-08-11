@@ -5,7 +5,7 @@ import asyncio
 from typing import Generator
 
 # Configure pytest for async tests
-pytest_plugins = ['pytest_asyncio']
+pytest_plugins = ["pytest_asyncio"]
 
 
 @pytest.fixture(scope="session")

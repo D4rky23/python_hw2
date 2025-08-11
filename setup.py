@@ -7,17 +7,21 @@ import sys
 from pathlib import Path
 
 
-def run_command(command: str, check: bool = True) -> subprocess.CompletedProcess:
+def run_command(
+    command: str, check: bool = True
+) -> subprocess.CompletedProcess:
     """Run a shell command."""
     print(f"Running: {command}")
-    result = subprocess.run(command, shell=True, capture_output=True, text=True)
-    
+    result = subprocess.run(
+        command, shell=True, capture_output=True, text=True
+    )
+
     if check and result.returncode != 0:
         print(f"Error running command: {command}")
         print(f"stdout: {result.stdout}")
         print(f"stderr: {result.stderr}")
         sys.exit(1)
-    
+
     return result
 
 
@@ -63,22 +67,30 @@ def start_service():
     print("Metrics at: http://localhost:8000/metrics")
     print("")
     print("Press Ctrl+C to stop the service")
-    
-    run_command(f"{sys.executable} -m uvicorn src.main:app --reload --host 0.0.0.0 --port 8000")
+
+    run_command(
+        f"{sys.executable} -m uvicorn src.main:app --reload --host 0.0.0.0 --port 8000"
+    )
 
 
 def main():
     """Main setup function."""
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="Math Service Setup")
-    parser.add_argument("--install", action="store_true", help="Install dependencies")
+    parser.add_argument(
+        "--install", action="store_true", help="Install dependencies"
+    )
     parser.add_argument("--test", action="store_true", help="Run tests")
-    parser.add_argument("--start", action="store_true", help="Start the service")
-    parser.add_argument("--all", action="store_true", help="Install, test, and start")
-    
+    parser.add_argument(
+        "--start", action="store_true", help="Start the service"
+    )
+    parser.add_argument(
+        "--all", action="store_true", help="Install, test, and start"
+    )
+
     args = parser.parse_args()
-    
+
     if args.all or not any([args.install, args.test, args.start]):
         # Default behavior: do everything
         setup_environment()
