@@ -86,7 +86,10 @@ class PowerService:
             # Send operation event to Kafka
             await messaging.send_operation_event(
                 operation_type="power",
-                parameters={"base": request.base, "exponent": request.exponent},
+                parameters={
+                    "base": request.base,
+                    "exponent": request.exponent,
+                },
                 result=result,
                 duration_ms=duration_ms,
             )
@@ -122,7 +125,10 @@ class PowerService:
             # Send error event to Kafka
             await messaging.send_operation_event(
                 operation_type="power",
-                parameters={"base": request.base, "exponent": request.exponent},
+                parameters={
+                    "base": request.base,
+                    "exponent": request.exponent,
+                },
                 result=None,
                 duration_ms=duration_ms,
                 success=False,

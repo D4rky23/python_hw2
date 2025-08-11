@@ -46,7 +46,7 @@ class TestRedisCache:
         assert exists is False
 
     @pytest.mark.asyncio
-    @patch('infra.cache.cache._redis')
+    @patch("infra.cache.cache._redis")
     async def test_cache_operations_with_redis(self, mock_redis):
         """Test cache operations when Redis is available."""
         # Mock Redis client with async methods
@@ -77,7 +77,7 @@ class TestRedisCache:
         mock_redis.delete.assert_called_once_with("test_key")
 
     @pytest.mark.asyncio
-    @patch('redis.asyncio.Redis')
+    @patch("redis.asyncio.Redis")
     async def test_cache_connection_failure(self, mock_redis_class):
         """Test cache behavior when Redis connection fails."""
         # Mock Redis connection failure
@@ -91,12 +91,14 @@ class TestRedisCache:
         assert result is None
 
     @pytest.mark.asyncio
-    @patch('infra.cache.cache._redis')
+    @patch("infra.cache.cache._redis")
     async def test_cache_json_serialization(self, mock_redis):
         """Test JSON serialization/deserialization in cache."""
         # Test complex data structure
         test_data = {"result": 42, "metadata": {"type": "power", "base": 2}}
-        mock_redis.get = AsyncMock(return_value=b'{"result": 42, "metadata": {"type": "power", "base": 2}}')
+        mock_redis.get = AsyncMock(
+            return_value=b'{"result": 42, "metadata": {"type": "power", "base": 2}}'
+        )
         mock_redis.setex = AsyncMock()
 
         # Set the mock redis client
@@ -108,5 +110,9 @@ class TestRedisCache:
 
         # Test set with complex data
         await self.cache.set("test_key", test_data)
-        expected_json = b'{"result": 42, "metadata": {"type": "power", "base": 2}}'
-        mock_redis.setex.assert_called_once_with("test_key", 3600, expected_json)
+        expected_json = (
+            b'{"result": 42, "metadata": {"type": "power", "base": 2}}'
+        )
+        mock_redis.setex.assert_called_once_with(
+            "test_key", 3600, expected_json
+        )

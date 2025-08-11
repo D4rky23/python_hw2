@@ -56,15 +56,9 @@ class Settings(BaseSettings):
     redis_url: str = Field(
         default="redis://localhost:6379", description="Redis connection URL"
     )
-    redis_password: str = Field(
-        default="", description="Redis password"
-    )
-    redis_db: int = Field(
-        default=0, description="Redis database number"
-    )
-    redis_ttl: int = Field(
-        default=3600, description="Cache TTL in seconds"
-    )
+    redis_password: str = Field(default="", description="Redis password")
+    redis_db: int = Field(default=0, description="Redis database number")
+    redis_ttl: int = Field(default=3600, description="Cache TTL in seconds")
 
     # Kafka Configuration
     kafka_enabled: bool = Field(

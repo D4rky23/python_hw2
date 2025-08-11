@@ -21,14 +21,14 @@ class TestKafkaProducer:
             operation_type="power",
             parameters={"base": 2, "exponent": 3},
             result=8,
-            duration_ms=1.0
+            duration_ms=1.0,
         )
 
         result2 = await self.producer.send_api_event(
             method="POST",
             endpoint="/api/v1/power",
             status_code=200,
-            duration_ms=50.0
+            duration_ms=50.0,
         )
 
         # Should return False when Kafka is not available
@@ -51,18 +51,18 @@ class TestKafkaProducer:
             operation_type="fibonacci",
             parameters={"n": 10},
             result=55,
-            duration_ms=2.0
+            duration_ms=2.0,
         )
 
         # Verify the method was called
         mock_producer.send_and_wait.assert_called_once()
         call_args = mock_producer.send_and_wait.call_args
-        event_data = call_args[1]['value']
-        
-        assert event_data['operation_type'] == 'fibonacci'
-        assert event_data['parameters'] == {"n": 10}
-        assert event_data['result'] == '55'
-        assert event_data['success'] is True
+        event_data = call_args[1]["value"]
+
+        assert event_data["operation_type"] == "fibonacci"
+        assert event_data["parameters"] == {"n": 10}
+        assert event_data["result"] == "55"
+        assert event_data["success"] is True
 
     @pytest.mark.asyncio
     async def test_operation_event_with_error(self):
@@ -78,17 +78,17 @@ class TestKafkaProducer:
             result=None,
             duration_ms=1.0,
             success=False,
-            error="Number too large"
+            error="Number too large",
         )
 
         # Verify the method was called
         mock_producer.send_and_wait.assert_called_once()
         call_args = mock_producer.send_and_wait.call_args
-        event_data = call_args[1]['value']
-        
-        assert event_data['operation_type'] == 'factorial'
-        assert event_data['success'] is False
-        assert event_data['error'] == "Number too large"
+        event_data = call_args[1]["value"]
+
+        assert event_data["operation_type"] == "factorial"
+        assert event_data["success"] is False
+        assert event_data["error"] == "Number too large"
 
     @pytest.mark.asyncio
     async def test_api_event_parameters(self):
@@ -99,21 +99,18 @@ class TestKafkaProducer:
 
         # Test API event
         await self.producer.send_api_event(
-            method="GET",
-            endpoint="/health",
-            status_code=200,
-            duration_ms=5.0
+            method="GET", endpoint="/health", status_code=200, duration_ms=5.0
         )
 
         # Verify the method was called
         mock_producer.send_and_wait.assert_called_once()
         call_args = mock_producer.send_and_wait.call_args
-        event_data = call_args[1]['value']
-        
-        assert event_data['method'] == 'GET'
-        assert event_data['endpoint'] == '/health'
-        assert event_data['status_code'] == 200
-        assert event_data['duration_ms'] == 5.0
+        event_data = call_args[1]["value"]
+
+        assert event_data["method"] == "GET"
+        assert event_data["endpoint"] == "/health"
+        assert event_data["status_code"] == 200
+        assert event_data["duration_ms"] == 5.0
 
     @pytest.mark.asyncio
     async def test_producer_error_handling(self):
@@ -128,7 +125,7 @@ class TestKafkaProducer:
             operation_type="power",
             parameters={"base": 2, "exponent": 3},
             result=8,
-            duration_ms=1.0
+            duration_ms=1.0,
         )
 
         assert result is False

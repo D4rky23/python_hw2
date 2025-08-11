@@ -12,9 +12,11 @@ class TestCacheAndMessagingIntegration:
     """Test Redis cache and Kafka messaging integration."""
 
     @pytest.mark.asyncio
-    @patch('infra.cache.cache')
-    @patch('infra.messaging.messaging')
-    async def test_power_calculation_with_cache_and_messaging(self, mock_messaging, mock_cache):
+    @patch("infra.cache.cache")
+    @patch("infra.messaging.messaging")
+    async def test_power_calculation_with_cache_and_messaging(
+        self, mock_messaging, mock_cache
+    ):
         """Test power calculation with caching and messaging."""
         # Setup mocks
         mock_cache.get.return_value = None  # Cache miss
@@ -31,12 +33,11 @@ class TestCacheAndMessagingIntegration:
         settings.kafka_enabled = True
 
         app = create_app()
-        
+
         async with AsyncClient(app=app, base_url="http://test") as client:
             # Make power calculation request
             response = await client.post(
-                "/api/v1/power",
-                json={"base": 2, "exponent": 3}
+                "/api/v1/power", json={"base": 2, "exponent": 3}
             )
 
         assert response.status_code == 200
@@ -52,9 +53,11 @@ class TestCacheAndMessagingIntegration:
         mock_messaging.send_api_event.assert_called_once()
 
     @pytest.mark.asyncio
-    @patch('infra.cache.cache')
-    @patch('infra.messaging.messaging')
-    async def test_fibonacci_calculation_with_cache_hit(self, mock_messaging, mock_cache):
+    @patch("infra.cache.cache")
+    @patch("infra.messaging.messaging")
+    async def test_fibonacci_calculation_with_cache_hit(
+        self, mock_messaging, mock_cache
+    ):
         """Test fibonacci calculation with cache hit."""
         # Setup cache hit
         mock_cache.get.return_value = 55  # Cached result for fibonacci(10)
@@ -68,7 +71,7 @@ class TestCacheAndMessagingIntegration:
         settings.kafka_enabled = True
 
         app = create_app()
-        
+
         async with AsyncClient(app=app, base_url="http://test") as client:
             response = await client.get("/api/v1/fibonacci/10")
 
@@ -84,9 +87,11 @@ class TestCacheAndMessagingIntegration:
         mock_messaging.send_api_event.assert_called_once()
 
     @pytest.mark.asyncio
-    @patch('infra.cache.cache')
-    @patch('infra.messaging.messaging')
-    async def test_factorial_calculation_with_error_messaging(self, mock_messaging, mock_cache):
+    @patch("infra.cache.cache")
+    @patch("infra.messaging.messaging")
+    async def test_factorial_calculation_with_error_messaging(
+        self, mock_messaging, mock_cache
+    ):
         """Test factorial calculation error handling with messaging."""
         # Setup mocks
         mock_cache.get.return_value = None
@@ -101,12 +106,12 @@ class TestCacheAndMessagingIntegration:
         settings.kafka_enabled = True
 
         app = create_app()
-        
+
         async with AsyncClient(app=app, base_url="http://test") as client:
             # Request factorial with too large number
             response = await client.post(
                 "/api/v1/factorial",
-                json={"n": 1000}  # Exceeds max_factorial_n
+                json={"n": 1000},  # Exceeds max_factorial_n
             )
 
         assert response.status_code == 400
@@ -114,26 +119,27 @@ class TestCacheAndMessagingIntegration:
         # Verify error operation event was sent
         mock_messaging.send_operation_event.assert_called_once()
         call_args = mock_messaging.send_operation_event.call_args
-        assert 'error' in call_args[1]
+        assert "error" in call_args[1]
 
         # API event should be sent for error response
         mock_messaging.send_api_event.assert_called_once()
 
     @pytest.mark.asyncio
-    @patch('infra.cache.cache')
-    @patch('infra.messaging.messaging')
-    async def test_cache_and_messaging_disabled(self, mock_messaging, mock_cache):
+    @patch("infra.cache.cache")
+    @patch("infra.messaging.messaging")
+    async def test_cache_and_messaging_disabled(
+        self, mock_messaging, mock_cache
+    ):
         """Test operation when cache and messaging are disabled."""
         # Disable cache and messaging
         settings.redis_enabled = False
         settings.kafka_enabled = False
 
         app = create_app()
-        
+
         async with AsyncClient(app=app, base_url="http://test") as client:
             response = await client.post(
-                "/api/v1/power",
-                json={"base": 3, "exponent": 2}
+                "/api/v1/power", json={"base": 3, "exponent": 2}
             )
 
         assert response.status_code == 200
@@ -145,9 +151,11 @@ class TestCacheAndMessagingIntegration:
         mock_messaging.start.assert_not_called()
 
     @pytest.mark.asyncio
-    @patch('infra.cache.cache')
-    @patch('infra.messaging.messaging')
-    async def test_service_resilience_to_cache_failures(self, mock_messaging, mock_cache):
+    @patch("infra.cache.cache")
+    @patch("infra.messaging.messaging")
+    async def test_service_resilience_to_cache_failures(
+        self, mock_messaging, mock_cache
+    ):
         """Test service continues working when cache operations fail."""
         # Setup cache to fail
         mock_cache.get.side_effect = Exception("Redis connection failed")
@@ -163,11 +171,10 @@ class TestCacheAndMessagingIntegration:
         settings.kafka_enabled = True
 
         app = create_app()
-        
+
         async with AsyncClient(app=app, base_url="http://test") as client:
             response = await client.post(
-                "/api/v1/power",
-                json={"base": 4, "exponent": 2}
+                "/api/v1/power", json={"base": 4, "exponent": 2}
             )
 
         # Service should still work despite cache failures
@@ -180,9 +187,11 @@ class TestCacheAndMessagingIntegration:
         mock_messaging.send_api_event.assert_called_once()
 
     @pytest.mark.asyncio
-    @patch('infra.cache.cache')
-    @patch('infra.messaging.messaging')
-    async def test_service_resilience_to_messaging_failures(self, mock_messaging, mock_cache):
+    @patch("infra.cache.cache")
+    @patch("infra.messaging.messaging")
+    async def test_service_resilience_to_messaging_failures(
+        self, mock_messaging, mock_cache
+    ):
         """Test service continues working when messaging operations fail."""
         # Setup messaging to fail
         mock_cache.get.return_value = None
@@ -191,18 +200,21 @@ class TestCacheAndMessagingIntegration:
         mock_cache.disconnect = AsyncMock()
         mock_messaging.start = AsyncMock()
         mock_messaging.stop = AsyncMock()
-        mock_messaging.send_operation_event.side_effect = Exception("Kafka connection failed")
-        mock_messaging.send_api_event.side_effect = Exception("Kafka connection failed")
+        mock_messaging.send_operation_event.side_effect = Exception(
+            "Kafka connection failed"
+        )
+        mock_messaging.send_api_event.side_effect = Exception(
+            "Kafka connection failed"
+        )
 
         settings.redis_enabled = True
         settings.kafka_enabled = True
 
         app = create_app()
-        
+
         async with AsyncClient(app=app, base_url="http://test") as client:
             response = await client.post(
-                "/api/v1/power",
-                json={"base": 5, "exponent": 2}
+                "/api/v1/power", json={"base": 5, "exponent": 2}
             )
 
         # Service should still work despite messaging failures

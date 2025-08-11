@@ -33,7 +33,7 @@ async def lifespan(app: FastAPI):
     logger.info("Starting Math Service API")
     await create_tables()
     logger.info("Database tables created")
-    
+
     # Initialize Redis connection
     if settings.redis_enabled:
         try:
@@ -41,7 +41,7 @@ async def lifespan(app: FastAPI):
             logger.info("Redis cache connected")
         except Exception as e:
             logger.warning(f"Failed to connect to Redis: {e}")
-    
+
     # Initialize Kafka producer
     if settings.kafka_enabled:
         try:
@@ -54,7 +54,7 @@ async def lifespan(app: FastAPI):
 
     # Shutdown
     logger.info("Shutting down Math Service API")
-    
+
     # Cleanup Redis connection
     if settings.redis_enabled:
         try:
@@ -62,7 +62,7 @@ async def lifespan(app: FastAPI):
             logger.info("Redis cache disconnected")
         except Exception as e:
             logger.warning(f"Error disconnecting Redis: {e}")
-    
+
     # Cleanup Kafka producer
     if settings.kafka_enabled:
         try:
