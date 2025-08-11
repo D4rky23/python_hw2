@@ -24,13 +24,14 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY src/ ./src/
 
-# Set Python path to find modules
-ENV PYTHONPATH=/app
+# Set Python path to find modules in src directory
+ENV PYTHONPATH=/app/src
 
-# Create non-root user
-RUN useradd --create-home --shell /bin/bash app \
-    && chown -R app:app /app
-USER app
+# Create data directory for SQLite database  
+RUN mkdir -p /app/data
+
+# Note: Running as root to avoid volume mount permission issues on Windows
+# In production, consider using proper user mapping or init containers
 
 # Expose port
 EXPOSE 8000

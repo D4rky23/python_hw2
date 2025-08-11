@@ -17,7 +17,7 @@ from infra import (
     request_count,
     request_duration,
     cache,
-    messaging,
+    kafka_producer,
 )
 
 
@@ -45,7 +45,7 @@ async def lifespan(app: FastAPI):
     # Initialize Kafka producer
     if settings.kafka_enabled:
         try:
-            await messaging.start()
+            await kafka_producer.start()
             logger.info("Kafka producer started")
         except Exception as e:
             logger.warning(f"Failed to start Kafka producer: {e}")
@@ -66,7 +66,7 @@ async def lifespan(app: FastAPI):
     # Cleanup Kafka producer
     if settings.kafka_enabled:
         try:
-            await messaging.stop()
+            await kafka_producer.stop()
             logger.info("Kafka producer stopped")
         except Exception as e:
             logger.warning(f"Error stopping Kafka producer: {e}")
@@ -121,7 +121,7 @@ def create_app() -> FastAPI:
         # Send API event to Kafka
         if settings.kafka_enabled:
             try:
-                await messaging.send_api_event(
+                await kafka_producer.send_api_event(
                     method=request.method,
                     endpoint=request.url.path,
                     status_code=response.status_code,
