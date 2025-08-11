@@ -1,7 +1,7 @@
 """SQLite repository implementation."""
 
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from sqlalchemy import (
@@ -37,7 +37,9 @@ class MathOperationModel(Base):
     parameters = Column(Text, nullable=False)  # JSON string
     result = Column(Text, nullable=False)  # String representation
     duration_ms = Column(Float, nullable=False)
-    timestamp = Column(DateTime, nullable=False, default=datetime.utcnow)
+    timestamp = Column(
+        DateTime, nullable=False, default=lambda: datetime.now(timezone.utc)
+    )
 
     def to_domain(self) -> MathOperation:
         """Convert to domain model."""
@@ -70,9 +72,13 @@ class SqliteRepository(MathOperationRepository):
 
     async def save_operation(self, operation: MathOperation) -> None:
         """Save a math operation to SQLite."""
-        model = MathOperationModel.from_domain(operation)
-        self.session.add(model)
-        await self.session.commit()
+        try:
+            model = MathOperationModel.from_domain(operation)
+            self.session.add(model)
+            await self.session.commit()
+        except Exception:
+            await self.session.rollback()
+            raise
 
     async def get_operations(
         self, operation_type: Optional[str] = None, limit: int = 100

@@ -1,7 +1,7 @@
 """Fibonacci calculation service."""
 
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List
 
 from domain.models import FibonacciResult, MathOperation
@@ -76,7 +76,7 @@ class FibonacciService:
                 parameters={"n": n},
                 result=result,
                 duration_ms=duration_ms,
-                timestamp=datetime.utcnow(),
+                timestamp=datetime.now(timezone.utc),
             )
 
             # Save to repository

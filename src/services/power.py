@@ -1,7 +1,7 @@
 """Power calculation service."""
 
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict
 
 from domain.models import MathOperation, PowerRequest, PowerResult
@@ -32,6 +32,10 @@ class PowerService:
                 raise ValueError(
                     f"Exponent must be <= {settings.max_power_exponent}"
                 )
+
+            # Additional overflow protection
+            if request.base > 1000 and request.exponent > 10:
+                raise ValueError("Calculation would result in overflow")
 
             # Calculate result
             result = request.base**request.exponent
@@ -64,7 +68,7 @@ class PowerService:
                 },
                 result=result,
                 duration_ms=duration_ms,
-                timestamp=datetime.utcnow(),
+                timestamp=datetime.now(timezone.utc),
             )
 
             # Save to repository

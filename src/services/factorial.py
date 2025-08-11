@@ -1,7 +1,7 @@
 """Factorial calculation service."""
 
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 
 from domain.models import FactorialRequest, FactorialResult, MathOperation
 from repositories.interfaces import MathOperationRepository
@@ -23,6 +23,10 @@ class FactorialService:
         """Calculate factorial using iterative approach."""
         if n <= 1:
             return 1
+
+        # Check for potential overflow
+        if n > 170:  # factorial(170) is close to sys.float_info.max
+            raise ValueError("Number too large for factorial calculation")
 
         result = 1
         for i in range(2, n + 1):
@@ -64,7 +68,7 @@ class FactorialService:
                 parameters={"n": request.n},
                 result=result,
                 duration_ms=duration_ms,
-                timestamp=datetime.utcnow(),
+                timestamp=datetime.now(timezone.utc),
             )
 
             # Save to repository
