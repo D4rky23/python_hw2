@@ -79,14 +79,14 @@ Configuration is handled via environment variables:
 - `LOG_LEVEL` - Logging level (default: INFO)
 - `API_KEY_ENABLED` - Enable API key authentication (default: False)
 
-## �️ Development Tools
+## 🛠️ Development Tools
 
 The project includes useful development utilities:
 
 - `scripts/debug.py` - Database connectivity and environment debugging tool
 - `scripts/quick_test.py` - Quick API endpoint testing utility
 
-## �📈 Observability
+## 📈 Observability
 
 - Structured logs in JSON format
 - Prometheus metrics at `/metrics`
