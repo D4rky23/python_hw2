@@ -4,7 +4,7 @@ import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 import json
 
-from infra.messaging import KafkaProducer
+from src.infra.messaging import KafkaProducer
 
 
 class TestKafkaProducer:

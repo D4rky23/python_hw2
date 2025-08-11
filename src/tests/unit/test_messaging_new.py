@@ -3,7 +3,7 @@
 import pytest
 from unittest.mock import AsyncMock
 
-from infra.messaging import KafkaProducer
+from src.infra.messaging import KafkaProducer
 
 
 class TestKafkaProducer:

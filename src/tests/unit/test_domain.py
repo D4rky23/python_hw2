@@ -3,7 +3,7 @@
 import pytest
 from datetime import datetime
 
-from domain.models import (
+from src.domain.models import (
     FactorialRequest,
     FactorialResult,
     FibonacciResult,

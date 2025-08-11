@@ -3,7 +3,7 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from infra.cache import RedisCache, cache_key_for_operation
+from src.infra.cache import RedisCache, cache_key_for_operation
 
 
 class TestRedisCache:

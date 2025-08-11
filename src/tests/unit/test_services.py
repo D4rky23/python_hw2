@@ -3,10 +3,10 @@
 import pytest
 from unittest.mock import AsyncMock, Mock
 
-from domain.models import FactorialRequest, PowerRequest
-from services.factorial import FactorialService
-from services.fibonacci import FibonacciService
-from services.power import PowerService
+from src.domain.models import FactorialRequest, PowerRequest
+from src.services.factorial import FactorialService
+from src.services.fibonacci import FibonacciService
+from src.services.power import PowerService
 
 
 class TestPowerService:

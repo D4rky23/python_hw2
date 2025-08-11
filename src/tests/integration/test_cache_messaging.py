@@ -4,8 +4,8 @@ import pytest
 from unittest.mock import AsyncMock, patch
 from httpx import AsyncClient
 
-from main import create_app
-from config import settings
+from src.main import create_app
+from src.config import settings
 
 
 class TestCacheAndMessagingIntegration:
