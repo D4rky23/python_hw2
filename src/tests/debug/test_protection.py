@@ -13,14 +13,14 @@ def test_calculation(base, exponent, expected_blocked=False):
 
         if expected_blocked:
             if response.status_code == 400:
-                print("✅ Correctly blocked by protection!")
+                print("Correctly blocked by protection!")
             else:
-                print("❌ Should have been blocked but wasn't")
+                print("Should have been blocked but wasn't")
         else:
             if response.status_code == 200:
-                print("✅ Calculation succeeded as expected")
+                print("Calculation succeeded as expected")
             else:
-                print("❌ Should have succeeded but was blocked")
+                print("Should have succeeded but was blocked")
 
         print("-" * 50)
         return response

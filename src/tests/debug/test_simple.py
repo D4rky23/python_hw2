@@ -12,11 +12,11 @@ def test_single_calculation(base, exponent):
         print(f"Response: {response.text}")
 
         if response.status_code == 400:
-            print("✅ Correctly blocked by protection!")
+            print("Correctly blocked by protection!")
         elif response.status_code == 200:
-            print("❌ Protection failed - calculation went through")
+            print("Protection failed - calculation went through")
         else:
-            print(f"⚠️ Unexpected status code: {response.status_code}")
+            print(f"Unexpected status code: {response.status_code}")
 
         print("-" * 50)
         return response

@@ -2,7 +2,7 @@
 
 A production-ready microservice for mathematical operations built with FastAPI, following Clean Architecture and Domain-Driven Design principles.
 
-## 🏗️ Architecture
+## Architecture
 
 This service implements Clean Architecture with the following layers:
 
@@ -11,7 +11,7 @@ This service implements Clean Architecture with the following layers:
 - **Domain Layer** (Entities/Value Objects) - Pure business rules
 - **Infrastructure Layer** (Repositories/External) - Data persistence and external concerns
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Local Development
 
@@ -30,7 +30,7 @@ uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
 docker compose up --build
 ```
 
-## 📋 API Endpoints
+## API Endpoints
 
 - `POST /v1/power` - Calculate base^exponent
 - `GET /v1/fibonacci/{n}` - Calculate nth Fibonacci number
@@ -50,28 +50,28 @@ pytest --cov=src
 # End-to-end testing with Playwright
 # The service includes comprehensive Playwright tests for all endpoints
 # All endpoints have been tested and verified working:
-# ✅ Health endpoint: {"status": "healthy", "service": "math-service"}
-# ✅ Factorial endpoint: {"n": 5, "result": 120}
-# ✅ Power endpoint: {"base": 4, "exponent": 2, "result": 16}
-# ✅ Fibonacci endpoint: {"n": 8, "result": 21}
-# ✅ Metrics endpoint: Prometheus metrics with full statistics
+# Health endpoint: {"status": "healthy", "service": "math-service"}
+# Factorial endpoint: {"n": 5, "result": 120}
+# Power endpoint: {"base": 4, "exponent": 2, "result": 16}
+# Fibonacci endpoint: {"n": 8, "result": 21}
+# Metrics endpoint: Prometheus metrics with full statistics
 ```
 
-## 📊 Features
+## Features
 
-- ✅ Clean Architecture with dependency injection
-- ✅ Input validation with Pydantic
-- ✅ SQLite persistence with SQLAlchemy
-- ✅ Structured logging
-- ✅ Prometheus metrics
-- ✅ OpenAPI documentation
-- ✅ Docker containerization with Kafka messaging
-- ✅ Comprehensive testing (Unit, Integration, E2E with Playwright)
-- ✅ Redis caching layer
-- ✅ Event-driven architecture with Kafka
-- ✅ Production-ready monitoring and observability
+- Clean Architecture with dependency injection
+- Input validation with Pydantic
+- SQLite persistence with SQLAlchemy
+- Structured logging
+- Prometheus metrics
+- OpenAPI documentation
+- Docker containerization with Kafka messaging
+- Comprehensive testing (Unit, Integration, E2E with Playwright)
+- Redis caching layer
+- Event-driven architecture with Kafka
+- Production-ready monitoring and observability
 
-## 🔧 Configuration
+## Configuration
 
 Configuration is handled via environment variables:
 
@@ -79,21 +79,21 @@ Configuration is handled via environment variables:
 - `LOG_LEVEL` - Logging level (default: INFO)
 - `API_KEY_ENABLED` - Enable API key authentication (default: False)
 
-## 🛠️ Development Tools
+## Development Tools
 
 The project includes useful development utilities:
 
 - `scripts/debug.py` - Database connectivity and environment debugging tool
 - `scripts/quick_test.py` - Quick API endpoint testing utility
 
-## 📈 Observability
+## Observability
 
 - Structured logs in JSON format
 - Prometheus metrics at `/metrics`
 - Request/response logging with duration tracking
 - Database operation metrics
 
-## 🐳 Docker Troubleshooting
+## Docker Troubleshooting
 
 If you encounter the "ModuleNotFoundError: No module named 'api'" error when running the Docker container, this is due to Python import path issues. Here's how to fix it:
 

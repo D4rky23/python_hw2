@@ -130,11 +130,11 @@ class MathServiceTester:
             await self.load_test()
 
             print("\n" + "=" * 60)
-            print("✅ All tests passed successfully!")
+            print("All tests passed successfully!")
             print("=" * 60)
 
         except Exception as e:
-            print(f"\n❌ Test failed: {e}")
+            print(f"\nTest failed: {e}")
             raise
         finally:
             await self.client.aclose()

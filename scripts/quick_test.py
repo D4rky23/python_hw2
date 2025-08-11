@@ -67,22 +67,20 @@ if __name__ == "__main__":
         for test_name, test_func in tests:
             try:
                 success = test_func()
-                results.append(
-                    (test_name, "✅ PASS" if success else "❌ FAIL")
-                )
+                results.append((test_name, "PASS" if success else "FAIL"))
             except Exception as e:
-                results.append((test_name, f"❌ ERROR: {e}"))
+                results.append((test_name, f"ERROR: {e}"))
             print()
 
         print("=" * 50)
-        print("📊 Test Results:")
+        print("Test Results:")
         for test_name, result in results:
             print(f"{test_name}: {result}")
 
-        all_passed = all("✅" in result for _, result in results)
+        all_passed = all("PASS" in result for _, result in results)
         print(
-            f"\n🎯 Overall: {'✅ ALL TESTS PASSED' if all_passed else '❌ SOME TESTS FAILED'}"
+            f"\nOverall: {'ALL TESTS PASSED' if all_passed else 'SOME TESTS FAILED'}"
         )
 
     except Exception as e:
-        print(f"❌ Failed to run tests: {e}")
+        print(f"Failed to run tests: {e}")

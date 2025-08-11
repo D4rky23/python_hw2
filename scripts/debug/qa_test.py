@@ -23,10 +23,10 @@ def test_health_endpoint():
         json_response = response.json()
         assert json_response["status"] == "healthy"
         assert json_response["service"] == "math-service"
-        print("✅ Health endpoint test PASSED")
+        print("Health endpoint test PASSED")
 
     except Exception as e:
-        print(f"❌ Health endpoint test FAILED: {e}")
+        print(f"Health endpoint test FAILED: {e}")
     print()
 
 
@@ -45,10 +45,10 @@ def test_metrics_endpoint():
         # Assertions
         assert response.status_code == 200
         assert "text/plain" in response.headers.get("content-type", "")
-        print("✅ Metrics endpoint test PASSED")
+        print("Metrics endpoint test PASSED")
 
     except Exception as e:
-        print(f"❌ Metrics endpoint test FAILED: {e}")
+        print(f"Metrics endpoint test FAILED: {e}")
     print()
 
 
@@ -70,10 +70,10 @@ def test_fibonacci_endpoint():
                 assert result["n"] == n
                 assert "result" in result
 
-        print("✅ Fibonacci endpoint test PASSED")
+        print("Fibonacci endpoint test PASSED")
 
     except Exception as e:
-        print(f"❌ Fibonacci endpoint test FAILED: {e}")
+        print(f"Fibonacci endpoint test FAILED: {e}")
     print()
 
 
@@ -103,10 +103,10 @@ def test_power_endpoint():
                 assert result["exponent"] == case["exponent"]
                 assert "result" in result
 
-        print("✅ Power endpoint test PASSED")
+        print("Power endpoint test PASSED")
 
     except Exception as e:
-        print(f"❌ Power endpoint test FAILED: {e}")
+        print(f"Power endpoint test FAILED: {e}")
     print()
 
 
@@ -130,10 +130,10 @@ def test_factorial_endpoint():
                 assert result["n"] == n
                 assert "result" in result
 
-        print("✅ Factorial endpoint test PASSED")
+        print("Factorial endpoint test PASSED")
 
     except Exception as e:
-        print(f"❌ Factorial endpoint test FAILED: {e}")
+        print(f"Factorial endpoint test FAILED: {e}")
     print()
 
 
@@ -146,18 +146,18 @@ def test_edge_cases():
         response = httpx.get(f"{BASE_URL}/api/v1/fibonacci/-1")
         print(f"Negative Fibonacci: Status {response.status_code}")
         assert response.status_code == 422  # Validation error
-        print("✅ Negative Fibonacci validation PASSED")
+        print("Negative Fibonacci validation PASSED")
     except Exception as e:
-        print(f"❌ Negative Fibonacci test FAILED: {e}")
+        print(f"Negative Fibonacci test FAILED: {e}")
 
     # Test negative factorial
     try:
         response = httpx.post(f"{BASE_URL}/api/v1/factorial/", json={"n": -1})
         print(f"Negative Factorial: Status {response.status_code}")
         assert response.status_code == 422  # Validation error
-        print("✅ Negative Factorial validation PASSED")
+        print("Negative Factorial validation PASSED")
     except Exception as e:
-        print(f"❌ Negative Factorial test FAILED: {e}")
+        print(f"Negative Factorial test FAILED: {e}")
 
     # Test negative exponent for power
     try:
@@ -166,9 +166,9 @@ def test_edge_cases():
         )
         print(f"Negative Exponent: Status {response.status_code}")
         assert response.status_code == 422  # Validation error
-        print("✅ Negative Exponent validation PASSED")
+        print("Negative Exponent validation PASSED")
     except Exception as e:
-        print(f"❌ Negative Exponent test FAILED: {e}")
+        print(f"Negative Exponent test FAILED: {e}")
 
     print()
 
@@ -185,9 +185,9 @@ def test_api_documentation():
         openapi_spec = response.json()
         assert "openapi" in openapi_spec
         assert "info" in openapi_spec
-        print("✅ OpenAPI JSON test PASSED")
+        print("OpenAPI JSON test PASSED")
     except Exception as e:
-        print(f"❌ OpenAPI JSON test FAILED: {e}")
+        print(f"OpenAPI JSON test FAILED: {e}")
 
     # Test Swagger UI
     try:
@@ -195,9 +195,9 @@ def test_api_documentation():
         print(f"Swagger UI: Status {response.status_code}")
         assert response.status_code == 200
         assert "text/html" in response.headers.get("content-type", "")
-        print("✅ Swagger UI test PASSED")
+        print("Swagger UI test PASSED")
     except Exception as e:
-        print(f"❌ Swagger UI test FAILED: {e}")
+        print(f"Swagger UI test FAILED: {e}")
 
     # Test ReDoc
     try:
@@ -205,15 +205,15 @@ def test_api_documentation():
         print(f"ReDoc: Status {response.status_code}")
         assert response.status_code == 200
         assert "text/html" in response.headers.get("content-type", "")
-        print("✅ ReDoc test PASSED")
+        print("ReDoc test PASSED")
     except Exception as e:
-        print(f"❌ ReDoc test FAILED: {e}")
+        print(f"ReDoc test FAILED: {e}")
 
     print()
 
 
 if __name__ == "__main__":
-    print("🚀 Starting QA Testing for Math Service API")
+    print("Starting QA Testing for Math Service API")
     print("=" * 50)
 
     # Run all tests
@@ -225,4 +225,4 @@ if __name__ == "__main__":
     test_edge_cases()
     test_api_documentation()
 
-    print("🏁 QA Testing Complete!")
+    print("QA Testing Complete!")

@@ -120,7 +120,7 @@ def test_authorization():
 
 
 if __name__ == "__main__":
-    print("🔍 Starting Detailed Error Investigation")
+    print("Starting Detailed Error Investigation")
     print("=" * 50)
 
     investigate_fibonacci_errors()
@@ -128,4 +128,4 @@ if __name__ == "__main__":
     investigate_factorial_errors()
     test_authorization()
 
-    print("\n🔍 Error Investigation Complete!")
+    print("\nError Investigation Complete!")

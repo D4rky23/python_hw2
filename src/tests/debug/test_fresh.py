@@ -20,9 +20,9 @@ def test_fresh_case():
         print(f"Response: {response.text}")
 
         if response.status_code == 400:
-            print("✅ Correctly blocked!")
+            print("Correctly blocked!")
         else:
-            print("❌ Should have been blocked but wasn't")
+            print("Should have been blocked but wasn't")
 
     except Exception as e:
         print(f"Error: {e}")
