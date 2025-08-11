@@ -9,3 +9,13 @@ prometheus-client>=0.17.0
 tenacity>=8.2.0
 python-multipart>=0.0.6
 aiosqlite>=0.17.0
+# Testing dependencies
+pytest>=8.0.0
+pytest-asyncio>=0.21.0
+httpx>=0.28.0
+# Redis caching
+redis[hiredis]>=5.0.0
+# Kafka messaging
+aiokafka>=0.10.0
+# Additional utilities
+cachetools>=5.3.0

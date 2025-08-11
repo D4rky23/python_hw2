@@ -9,6 +9,7 @@ from repositories.interfaces import MathOperationRepository
 from config import settings
 from infra.logging import get_logger
 from infra.metrics import operation_count, operation_duration
+from infra import cache, messaging, cache_key_for_operation
 
 logger = get_logger(__name__)
 
@@ -21,10 +22,30 @@ class PowerService:
         self.repository = repository
 
     async def calculate_power(self, request: PowerRequest) -> PowerResult:
-        """Calculate base^exponent with logging and persistence."""
+        """Calculate base^exponent with caching, logging and persistence."""
         start_time = time.time()
 
+        # Generate cache key
+        cache_key = cache_key_for_operation(
+            "power", base=request.base, exponent=request.exponent
+        )
+
         try:
+            # Check cache first
+            cached_result = await cache.get(cache_key)
+            if cached_result is not None:
+                logger.info(
+                    "Power calculation cache hit",
+                    base=request.base,
+                    exponent=request.exponent,
+                    result=cached_result,
+                )
+                return PowerResult(
+                    base=request.base,
+                    exponent=request.exponent,
+                    result=cached_result,
+                )
+
             # Validate input limits
             if request.base > settings.max_power_base:
                 raise ValueError(f"Base must be <= {settings.max_power_base}")
@@ -39,6 +60,9 @@ class PowerService:
 
             # Calculate result
             result = request.base**request.exponent
+
+            # Cache the result
+            await cache.set(cache_key, result, ttl=3600)  # Cache for 1 hour
 
             # Create result object
             power_result = PowerResult(
@@ -55,6 +79,14 @@ class PowerService:
                 "Power calculation completed",
                 base=request.base,
                 exponent=request.exponent,
+                result=result,
+                duration_ms=duration_ms,
+            )
+
+            # Send operation event to Kafka
+            await messaging.send_operation_event(
+                operation_type="power",
+                parameters={"base": request.base, "exponent": request.exponent},
                 result=result,
                 duration_ms=duration_ms,
             )
@@ -86,6 +118,16 @@ class PowerService:
 
         except Exception as e:
             duration_ms = (time.time() - start_time) * 1000
+
+            # Send error event to Kafka
+            await messaging.send_operation_event(
+                operation_type="power",
+                parameters={"base": request.base, "exponent": request.exponent},
+                result=None,
+                duration_ms=duration_ms,
+                success=False,
+                error=str(e),
+            )
 
             logger.error(
                 "Power calculation failed",

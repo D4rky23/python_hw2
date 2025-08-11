@@ -49,6 +49,37 @@ class Settings(BaseSettings):
         description="Maximum exponent value for power computation",
     )
 
+    # Redis Configuration
+    redis_enabled: bool = Field(
+        default=True, description="Enable Redis caching"
+    )
+    redis_url: str = Field(
+        default="redis://localhost:6379", description="Redis connection URL"
+    )
+    redis_password: str = Field(
+        default="", description="Redis password"
+    )
+    redis_db: int = Field(
+        default=0, description="Redis database number"
+    )
+    redis_ttl: int = Field(
+        default=3600, description="Cache TTL in seconds"
+    )
+
+    # Kafka Configuration
+    kafka_enabled: bool = Field(
+        default=True, description="Enable Kafka messaging"
+    )
+    kafka_bootstrap_servers: str = Field(
+        default="localhost:9092", description="Kafka bootstrap servers"
+    )
+    kafka_topic: str = Field(
+        default="math-operations", description="Kafka topic for events"
+    )
+    kafka_group_id: str = Field(
+        default="math-service", description="Kafka consumer group ID"
+    )
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"

@@ -63,6 +63,17 @@ class PowerResult:
 
 
 @dataclass(frozen=True)
+class FibonacciRequest:
+    """Request for Fibonacci calculation."""
+
+    n: int
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {"n": self.n}
+
+
+@dataclass(frozen=True)
 class FibonacciResult:
     """Value object for Fibonacci operation result."""
 

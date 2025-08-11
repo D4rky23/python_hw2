@@ -7,15 +7,17 @@ from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import PlainTextResponse
 
-from api.v1 import v1_router
-from config import settings
-from infra import (
+from .api.v1 import v1_router
+from .config import settings
+from .infra import (
     configure_logging,
     create_tables,
     get_logger,
     get_metrics,
     request_count,
     request_duration,
+    cache,
+    messaging,
 )
 
 
@@ -31,11 +33,43 @@ async def lifespan(app: FastAPI):
     logger.info("Starting Math Service API")
     await create_tables()
     logger.info("Database tables created")
+    
+    # Initialize Redis connection
+    if settings.redis_enabled:
+        try:
+            await cache.connect()
+            logger.info("Redis cache connected")
+        except Exception as e:
+            logger.warning(f"Failed to connect to Redis: {e}")
+    
+    # Initialize Kafka producer
+    if settings.kafka_enabled:
+        try:
+            await messaging.start()
+            logger.info("Kafka producer started")
+        except Exception as e:
+            logger.warning(f"Failed to start Kafka producer: {e}")
 
     yield
 
     # Shutdown
     logger.info("Shutting down Math Service API")
+    
+    # Cleanup Redis connection
+    if settings.redis_enabled:
+        try:
+            await cache.disconnect()
+            logger.info("Redis cache disconnected")
+        except Exception as e:
+            logger.warning(f"Error disconnecting Redis: {e}")
+    
+    # Cleanup Kafka producer
+    if settings.kafka_enabled:
+        try:
+            await messaging.stop()
+            logger.info("Kafka producer stopped")
+        except Exception as e:
+            logger.warning(f"Error stopping Kafka producer: {e}")
 
 
 def create_app() -> FastAPI:
@@ -64,7 +98,7 @@ def create_app() -> FastAPI:
     # Add request logging middleware
     @app.middleware("http")
     async def log_requests(request: Request, call_next):
-        """Log all HTTP requests with timing."""
+        """Log all HTTP requests with timing and Kafka events."""
         import time
 
         start_time = time.time()
@@ -83,6 +117,18 @@ def create_app() -> FastAPI:
             status_code=response.status_code,
             duration_seconds=duration,
         )
+
+        # Send API event to Kafka
+        if settings.kafka_enabled:
+            try:
+                await messaging.send_api_event(
+                    method=request.method,
+                    endpoint=request.url.path,
+                    status_code=response.status_code,
+                    duration_ms=duration * 1000,
+                )
+            except Exception as e:
+                logger.warning(f"Failed to send API event to Kafka: {e}")
 
         # Update metrics
         request_count.labels(

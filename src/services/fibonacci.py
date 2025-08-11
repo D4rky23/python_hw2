@@ -2,13 +2,14 @@
 
 import time
 from datetime import datetime, timezone
-from typing import Dict, List
+from typing import Any, Dict, List
 
-from domain.models import FibonacciResult, MathOperation
+from domain.models import FibonacciRequest, FibonacciResult, MathOperation
 from repositories.interfaces import MathOperationRepository
 from config import settings
 from infra.logging import get_logger
 from infra.metrics import operation_count, operation_duration
+from infra import cache, messaging, cache_key_for_operation
 
 logger = get_logger(__name__)
 
@@ -41,10 +42,23 @@ class FibonacciService:
         return b
 
     async def calculate_fibonacci(self, n: int) -> FibonacciResult:
-        """Calculate nth Fibonacci number with logging and persistence."""
+        """Calculate nth Fibonacci number with caching, logging and persistence."""
         start_time = time.time()
 
+        # Generate cache key
+        cache_key = cache_key_for_operation("fibonacci", n=n)
+
         try:
+            # Check cache first
+            cached_result = await cache.get(cache_key)
+            if cached_result is not None:
+                logger.info(
+                    "Fibonacci calculation cache hit",
+                    n=n,
+                    result=cached_result,
+                )
+                return FibonacciResult(n=n, result=cached_result)
+
             # Validate input
             if not isinstance(n, int):
                 raise ValueError("N must be an integer")
@@ -56,6 +70,9 @@ class FibonacciService:
             # Calculate result
             result = self._calculate_fibonacci(n)
 
+            # Cache the result
+            await cache.set(cache_key, result, ttl=3600)  # Cache for 1 hour
+
             # Create result object
             fib_result = FibonacciResult(n=n, result=result)
 
@@ -66,6 +83,14 @@ class FibonacciService:
             logger.info(
                 "Fibonacci calculation completed",
                 n=n,
+                result=result,
+                duration_ms=duration_ms,
+            )
+
+            # Send operation event to Kafka
+            await messaging.send_operation_event(
+                operation_type="fibonacci",
+                parameters={"n": n},
                 result=result,
                 duration_ms=duration_ms,
             )
@@ -94,6 +119,16 @@ class FibonacciService:
 
         except Exception as e:
             duration_ms = (time.time() - start_time) * 1000
+
+            # Send error event to Kafka
+            await messaging.send_operation_event(
+                operation_type="fibonacci",
+                parameters={"n": n},
+                result=None,
+                duration_ms=duration_ms,
+                success=False,
+                error=str(e),
+            )
 
             logger.error(
                 "Fibonacci calculation failed",
