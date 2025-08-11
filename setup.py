@@ -43,7 +43,7 @@ def setup_environment():
         if env_example.exists():
             env_file.write_text(env_example.read_text())
         else:
-            env_content = """DATABASE_URL=sqlite:///./math_service.db
+            env_content = """DATABASE_URL=sqlite:///./src/math_service.db
 LOG_LEVEL=INFO
 API_KEY_ENABLED=false
 API_KEY=your-secret-api-key

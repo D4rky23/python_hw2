@@ -11,7 +11,7 @@ class Settings(BaseSettings):
 
     # Database
     database_url: str = Field(
-        default="sqlite:///./math_service.db",
+        default="sqlite:///./src/math_service.db",
         description="Database connection URL",
     )
 

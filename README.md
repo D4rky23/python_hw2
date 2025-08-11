@@ -46,6 +46,15 @@ pytest
 
 # Run with coverage
 pytest --cov=src
+
+# End-to-end testing with Playwright
+# The service includes comprehensive Playwright tests for all endpoints
+# All endpoints have been tested and verified working:
+# ✅ Health endpoint: {"status": "healthy", "service": "math-service"}
+# ✅ Factorial endpoint: {"n": 5, "result": 120}
+# ✅ Power endpoint: {"base": 4, "exponent": 2, "result": 16}
+# ✅ Fibonacci endpoint: {"n": 8, "result": 21}
+# ✅ Metrics endpoint: Prometheus metrics with full statistics
 ```
 
 ## 📊 Features
@@ -56,18 +65,28 @@ pytest --cov=src
 - ✅ Structured logging
 - ✅ Prometheus metrics
 - ✅ OpenAPI documentation
-- ✅ Docker containerization
-- ✅ Comprehensive testing
+- ✅ Docker containerization with Kafka messaging
+- ✅ Comprehensive testing (Unit, Integration, E2E with Playwright)
+- ✅ Redis caching layer
+- ✅ Event-driven architecture with Kafka
+- ✅ Production-ready monitoring and observability
 
 ## 🔧 Configuration
 
 Configuration is handled via environment variables:
 
-- `DATABASE_URL` - SQLite database path (default: sqlite:///./math_service.db)
+- `DATABASE_URL` - SQLite database path (default: sqlite:///./src/math_service.db)
 - `LOG_LEVEL` - Logging level (default: INFO)
 - `API_KEY_ENABLED` - Enable API key authentication (default: False)
 
-## 📈 Observability
+## �️ Development Tools
+
+The project includes useful development utilities:
+
+- `scripts/debug.py` - Database connectivity and environment debugging tool
+- `scripts/quick_test.py` - Quick API endpoint testing utility
+
+## �📈 Observability
 
 - Structured logs in JSON format
 - Prometheus metrics at `/metrics`
@@ -78,25 +97,20 @@ Configuration is handled via environment variables:
 
 If you encounter the "ModuleNotFoundError: No module named 'api'" error when running the Docker container, this is due to Python import path issues. Here's how to fix it:
 
-### Solution 1: Use the Fixed Dockerfile
-Use the simplified Dockerfile that properly sets the PYTHONPATH:
-
-```bash
-# Build with the simplified Dockerfile
-docker build -t math-service -f Dockerfile.simple .
-
-# Run the container
-docker run -it --rm -p 8000:8000 math-service
-```
-
-### Solution 2: Use docker-compose
-The docker-compose.yml file has been updated to use the correct configuration:
+### Solution 1: Use docker-compose (Recommended)
+The docker-compose.yml file has been properly configured with all dependencies:
 
 ```bash
 docker-compose up --build
 ```
 
-### Solution 3: Manual Fix
+This starts the full stack:
+- Math Service API (port 8000)
+- Redis cache (port 6379)
+- Kafka message broker (port 9092)
+- Zookeeper (port 2181)
+
+### Solution 2: Manual Fix
 If you want to fix the original Dockerfile, ensure these environment variables are set:
 
 ```dockerfile
@@ -109,6 +123,11 @@ And the CMD should be:
 CMD ["python", "-m", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
+### Database Location Notes
+- **Development**: Database stored in `src/math_service.db`  
+- **Docker**: Database stored in `data/math_service.db` (volume mounted)
+- **Configuration**: Paths are relative to project root
+
 ### Verification
 Once the container is running, test the endpoints:
 
@@ -116,6 +135,9 @@ Once the container is running, test the endpoints:
 # Health check
 curl http://localhost:8000/health
 
-# API documentation
+# API documentation  
 curl http://localhost:8000/docs
+
+# Prometheus metrics
+curl http://localhost:8000/metrics
 ```
