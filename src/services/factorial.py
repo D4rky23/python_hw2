@@ -9,7 +9,8 @@ from repositories.interfaces import MathOperationRepository
 from config import settings
 from infra.logging import get_logger
 from infra.metrics import operation_count, operation_duration
-from infra import cache, messaging, cache_key_for_operation
+from infra import cache, cache_key_for_operation
+from infra.messaging import send_operation_event
 
 logger = get_logger(__name__)
 
@@ -81,7 +82,7 @@ class FactorialService:
             )
 
             # Send operation event to Kafka
-            await messaging.send_operation_event(
+            await send_operation_event(
                 operation_type="factorial",
                 parameters={"n": request.n},
                 result=result,
@@ -114,7 +115,7 @@ class FactorialService:
             duration_ms = (time.time() - start_time) * 1000
 
             # Send error event to Kafka
-            await messaging.send_operation_event(
+            await send_operation_event(
                 operation_type="factorial",
                 parameters={"n": request.n},
                 result=None,

@@ -151,3 +151,40 @@ class KafkaProducer:
 
 # Global producer instance
 kafka_producer = KafkaProducer()
+
+
+# Convenience functions for backward compatibility
+async def send_operation_event(
+    operation_type: str,
+    parameters: Dict[str, Any],
+    result: Any,
+    duration_ms: float,
+    success: bool = True,
+    error: Optional[str] = None,
+) -> bool:
+    """Send math operation event to Kafka."""
+    return await kafka_producer.send_operation_event(
+        operation_type=operation_type,
+        parameters=parameters,
+        result=result,
+        duration_ms=duration_ms,
+        success=success,
+        error=error,
+    )
+
+
+async def send_api_event(
+    method: str,
+    endpoint: str,
+    status_code: int,
+    duration_ms: float,
+    user_agent: Optional[str] = None,
+) -> bool:
+    """Send API request event to Kafka."""
+    return await kafka_producer.send_api_event(
+        method=method,
+        endpoint=endpoint,
+        status_code=status_code,
+        duration_ms=duration_ms,
+        user_agent=user_agent,
+    )

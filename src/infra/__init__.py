@@ -3,7 +3,12 @@
 from .cache import RedisCache, cache, cache_key_for_operation
 from .db import AsyncSessionLocal, create_tables, get_db_session
 from .logging import configure_logging, get_logger
-from .messaging import KafkaProducer, kafka_producer
+from .messaging import (
+    KafkaProducer,
+    kafka_producer,
+    send_operation_event,
+    send_api_event,
+)
 from .metrics import (
     get_metrics,
     operation_count,
@@ -28,4 +33,6 @@ __all__ = [
     "cache_key_for_operation",
     "KafkaProducer",
     "kafka_producer",
+    "send_operation_event",
+    "send_api_event",
 ]
