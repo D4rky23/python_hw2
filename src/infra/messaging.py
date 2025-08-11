@@ -8,7 +8,7 @@ from aiokafka import AIOKafkaProducer
 from aiokafka.errors import KafkaError
 
 from config import settings
-from infra.logging import get_logger
+from .logging import get_logger
 
 logger = get_logger(__name__)
 

@@ -8,7 +8,7 @@ import redis.asyncio as redis
 from redis.asyncio import Redis
 
 from config import settings
-from infra.logging import get_logger
+from .logging import get_logger
 
 logger = get_logger(__name__)
 

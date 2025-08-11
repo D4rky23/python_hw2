@@ -17,8 +17,8 @@ from sqlalchemy import (
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import DeclarativeBase
 
-from domain.models import MathOperation
-from repositories.interfaces import MathOperationRepository
+from ..domain.models import MathOperation
+from .interfaces import MathOperationRepository
 
 
 class Base(DeclarativeBase):

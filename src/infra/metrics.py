@@ -3,6 +3,8 @@
 from prometheus_client import Counter, Histogram, generate_latest
 from prometheus_client.core import CollectorRegistry
 
+from config import settings
+
 
 # Create custom registry to avoid conflicts
 registry = CollectorRegistry()

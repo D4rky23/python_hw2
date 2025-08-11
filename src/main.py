@@ -7,9 +7,9 @@ from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import PlainTextResponse
 
-from .api.v1 import v1_router
-from .config import settings
-from .infra import (
+from api.v1 import v1_router
+from config import settings
+from infra import (
     configure_logging,
     create_tables,
     get_logger,
