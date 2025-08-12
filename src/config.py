@@ -11,7 +11,7 @@ class Settings(BaseSettings):
 
     # Database
     database_url: str = Field(
-        default="sqlite:///./src/math_service.db",
+        default="sqlite:///./math_service.db",
         description="Database connection URL",
     )
 
@@ -28,6 +28,16 @@ class Settings(BaseSettings):
     )
     api_key: str = Field(
         default="your-secret-api-key", description="API key for authentication"
+    )
+
+    # JWT Authentication
+    jwt_secret_key: str = Field(
+        default="your-super-secret-jwt-key-change-this-in-production",
+        description="JWT secret key for token signing",
+    )
+    jwt_algorithm: str = Field(default="HS256", description="JWT algorithm")
+    jwt_expire_minutes: int = Field(
+        default=30, description="JWT token expiration in minutes"
     )
 
     # Server

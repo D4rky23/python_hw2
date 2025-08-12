@@ -5,8 +5,8 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
-from api.deps import get_factorial_service, verify_api_key
-from domain.models import FactorialRequest
+from api.deps import get_factorial_service, get_current_user
+from domain.models import FactorialRequest, User
 from services.factorial import FactorialService
 
 router = APIRouter(prefix="/v1/factorial", tags=["Factorial Operations"])
@@ -35,7 +35,7 @@ class FactorialResponseModel(BaseModel):
 )
 async def calculate_factorial(
     request: FactorialRequestModel,
-    _: Annotated[None, Depends(verify_api_key)],
+    current_user: Annotated[User, Depends(get_current_user)],
     service: Annotated[FactorialService, Depends(get_factorial_service)],
 ) -> FactorialResponseModel:
     """Calculate n! (factorial)."""

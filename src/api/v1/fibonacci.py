@@ -5,7 +5,8 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Path
 from pydantic import BaseModel, Field
 
-from api.deps import get_fibonacci_service, verify_api_key
+from api.deps import get_fibonacci_service, get_current_user
+from domain.models import User
 from services.fibonacci import FibonacciService
 
 router = APIRouter(prefix="/v1/fibonacci", tags=["Fibonacci Operations"])
@@ -28,7 +29,7 @@ async def calculate_fibonacci(
     n: Annotated[
         int, Path(ge=0, description="Position in Fibonacci sequence")
     ],
-    _: Annotated[None, Depends(verify_api_key)],
+    current_user: Annotated[User, Depends(get_current_user)],
     service: Annotated[FibonacciService, Depends(get_fibonacci_service)],
 ) -> FibonacciResponseModel:
     """Calculate nth Fibonacci number."""

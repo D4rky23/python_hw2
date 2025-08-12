@@ -3,6 +3,72 @@
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Dict, Optional
+from enum import Enum
+
+
+class UserRole(str, Enum):
+    """User roles enum."""
+
+    USER = "user"
+    ADMIN = "admin"
+
+
+@dataclass(frozen=True)
+class User:
+    """User domain model."""
+
+    id: Optional[int]
+    username: str
+    email: str
+    hashed_password: str
+    full_name: Optional[str]
+    role: UserRole
+    is_active: bool
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary representation."""
+        return {
+            "id": self.id,
+            "username": self.username,
+            "email": self.email,
+            "full_name": self.full_name,
+            "role": self.role.value,
+            "is_active": self.is_active,
+            "created_at": self.created_at.isoformat(),
+            "updated_at": (
+                self.updated_at.isoformat() if self.updated_at else None
+            ),
+        }
+
+
+@dataclass(frozen=True)
+class UserCreate:
+    """User creation request."""
+
+    username: str
+    email: str
+    password: str
+    full_name: Optional[str] = None
+    role: UserRole = UserRole.USER
+
+
+@dataclass(frozen=True)
+class UserLogin:
+    """User login request."""
+
+    username: str
+    password: str
+
+
+@dataclass(frozen=True)
+class Token:
+    """JWT Token response."""
+
+    access_token: str
+    token_type: str = "bearer"
+    expires_in: int = 1800  # 30 minutes
 
 
 @dataclass(frozen=True)

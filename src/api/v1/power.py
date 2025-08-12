@@ -5,8 +5,8 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
-from api.deps import get_power_service, verify_api_key
-from domain.models import PowerRequest
+from api.deps import get_power_service, get_current_user
+from domain.models import PowerRequest, User
 from services.power import PowerService
 
 router = APIRouter(prefix="/v1/power", tags=["Power Operations"])
@@ -37,7 +37,7 @@ class PowerResponseModel(BaseModel):
 )
 async def calculate_power(
     request: PowerRequestModel,
-    _: Annotated[None, Depends(verify_api_key)],
+    current_user: Annotated[User, Depends(get_current_user)],
     service: Annotated[PowerService, Depends(get_power_service)],
 ) -> PowerResponseModel:
     """Calculate base^exponent."""
