@@ -1,6 +1,6 @@
 """Authentication API endpoints."""
 
-from typing import Annotated, List
+from typing import Annotated, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field, EmailStr
@@ -53,7 +53,9 @@ class UserResponse(BaseModel):
     role: str = Field(..., description="User role")
     is_active: bool = Field(..., description="Is user active")
     created_at: str = Field(..., description="Creation timestamp")
-    updated_at: str = Field(None, description="Last update timestamp")
+    updated_at: Optional[str] = Field(
+        None, description="Last update timestamp"
+    )
 
     @classmethod
     def from_domain(cls, user: User) -> "UserResponse":
